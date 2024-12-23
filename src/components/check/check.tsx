@@ -222,7 +222,7 @@ export function CheckPulse() {
   const getEngagementsForUser = (handle: string, type: "like" | "retweet" | "reply" | "quote") => {
     return engagements
       .filter((e) => e.author.handle === handle && e.type === type)
-      .map((e) => e.parent_tweet_id);
+      .map((e) => (type === "reply" || type === "quote" ? e.tweet_id : e.parent_tweet_id));
   };
 
   const renderStageView = () => {
