@@ -109,8 +109,10 @@ export function CheckPulse() {
     });
     if (response.ok) {
       toast.success("Engagements saved successfully");
+      setStage(5);
     } else {
       toast.error("Failed to save engagements");
+      setStage(0);
     }
   };
   // const handleCheckPulse = async () => {
@@ -118,11 +120,23 @@ export function CheckPulse() {
   //   const quotes = await getQuotesAndReplies();
   // };
 
-  // useEffect(() => {
-  //     if (session) {
-  //         setIsLoading(true);
-  //     }
-  // }, [session]);
+  useEffect(() => {
+    if (session) {
+      setIsLoading(true);
+      
+      (async () => {
+        const response = await fetch("/api/engagememts");
+        const userEngagements = await response.json();
+
+        if (response.ok && userEngagements && userEngagements.length > 0) {
+          setEngagements(userEngagements);
+          setStage(5);
+        }
+      })().then(() => {
+        setIsLoading(false);
+      });
+    }
+  }, [session]);
 
   useEffect(() => {
     if (messageId && trackedMessages.has(messageId)) {
@@ -198,6 +212,8 @@ export function CheckPulse() {
         toast.success(`Fetched ${engagements.length} total engagements`);
         saveEngagements();
         break;
+      case 5:
+        break;
       default:
         break;
     }
@@ -255,6 +271,17 @@ export function CheckPulse() {
           </div>
         );
       case 4:
+        return (
+          <div className="space-y-4">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-4 h-4 border-2 border-t-transparent border-blue-500 rounded-full animate-spin" />
+              </div>
+              <span className="font-bold">Saving engagements to database...</span>
+            </div>
+          </div>
+        );
+      case 5:
         const sortedStats = Object.entries(stats)
           .map(([id, data]) => ({
             id,
