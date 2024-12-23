@@ -217,7 +217,7 @@ export function CheckPulse() {
       default:
         break;
     }
-  }, [stage]);
+  }, [stage, engagements, tweets]);
 
   const getEngagementsForUser = (handle: string, type: "like" | "retweet" | "reply" | "quote") => {
     return engagements

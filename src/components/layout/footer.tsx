@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Logo } from "./logo";
 import { ChevronRightIcon } from "lucide-react";
 
@@ -90,12 +91,12 @@ export default function Footer() {
       <div className="mx-auto w-full max-w-screen-xl px-4">
         <div className="gap-4 p-4 py-16 sm:pb-16 md:flex md:justify-between">
           <div className="mb-12 flex flex-col gap-2">
-            <a href="/" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
               <Logo scale={0.7} />
               <span className="self-center whitespace-nowrap text-2xl font-semibold text-neutral-900 dark:text-white mt-1">
                 Xocial Pulse
               </span>
-            </a>
+            </Link>
             <div className="max-w-sm">
               <span className="ml-2 text-sm font-medium text-neutral-500">
                 Track how your posts are converting.
@@ -141,9 +142,9 @@ export default function Footer() {
           </div>
           <span className="text-sm tracking-tight text-neutral-500 dark:text-neutral-400 sm:text-center">
             Copyright © {new Date().getFullYear()}{" "}
-            <a href="/" className="cursor-pointer">
+            <Link href="/" className="cursor-pointer">
               Xocial Pulse
-            </a>
+            </Link>
             . All Rights Reserved.
           </span>
         </div>

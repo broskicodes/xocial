@@ -40,6 +40,7 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(
         if (React.isValidElement(child)) {
           if (child.type === DockButton || child.type === DockIcon) {
             return React.cloneElement(child, {
+              // @ts-ignore
               ...child.props,
               mouseX: mouseX,
               magnification: magnification,

@@ -22,8 +22,7 @@ export default function DashboardPage() {
                 {"Who's engaging with your tweets?"}
               </h1>
               <p className="max-w-xl text-center text-base text-gray-500 sm:text-lg">
-                Track which followers engage the most with your content. See who your "hot leads"
-                are and how well your posts are converting.
+                {"Track which followers engage the most with your content. See who your \"hot leads\" are and how well your posts are converting."}
               </p>
             </div>
             {!session && (

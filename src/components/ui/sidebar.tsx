@@ -113,7 +113,7 @@ const SidebarProvider = React.forwardRef<
         setOpen(false);
         initialRenderRef.current = false;
       }
-    }, [isMobile]);
+    }, [isMobile, setOpen]);
 
     const contextValue = React.useMemo<SidebarContext>(
       () => ({
@@ -125,7 +125,7 @@ const SidebarProvider = React.forwardRef<
         setOpenMobile: setOpen,
         toggleSidebar,
       }),
-      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar],
+      [state, open, setOpen, isMobile, toggleSidebar],
     );
 
     return (
