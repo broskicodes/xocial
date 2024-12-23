@@ -3,6 +3,7 @@ import { create } from "zustand";
 export enum ClientMessageType {
   Tweets = "tweets",
   Engagements = "engagements",
+  Import = "import",
 }
 
 export enum WebSocketMessageType {

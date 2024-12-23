@@ -8,6 +8,14 @@ import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { Textarea } from "../ui/textarea";
 
 export function CheckPulse() {
   const { data: session } = useSession();
@@ -23,6 +31,8 @@ export function CheckPulse() {
     type: string;
     tweetIds: string[];
   } | null>(null);
+  const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [tweetLinks, setTweetLinks] = useState("");
 
   const getTweets = async () => {
     const msgId = send({
@@ -109,16 +119,37 @@ export function CheckPulse() {
     });
     if (response.ok) {
       toast.success("Engagements saved successfully");
+      setTweetLinks("");
       setStage(5);
     } else {
       toast.error("Failed to save engagements");
       setStage(0);
     }
   };
-  // const handleCheckPulse = async () => {
-  //   const likes = await getLikesAndRetweets();
-  //   const quotes = await getQuotesAndReplies();
-  // };
+
+  const handleImportTweets = async () => {
+    const links = tweetLinks.split(/[\n,]/).map(link => link.trim()).filter(Boolean);
+    const tweetIds = links.map(link => link.split("/").pop()?.split("?")[0]).filter(Boolean);
+
+    if (!tweetIds.length) {
+      toast.error("No valid tweet links found");
+      return;
+    }
+
+    // console.log(tweetIds);
+
+    setImportDialogOpen(false);
+    
+    const msgId = send({
+      type: ClientMessageType.Import,
+      payload: {
+        tweetIds,
+        handle: session?.user?.handle,
+      },
+    });
+    setMessageId(msgId);
+    setIsLoading(true);
+  };
 
   useEffect(() => {
     if (session) {
@@ -161,6 +192,11 @@ export function CheckPulse() {
             setEngagements((oldEngagements) => [...oldEngagements, ...engagements]);
             console.log(engagements);
             setStage(4);
+            break;
+          case ClientMessageType.Import:
+            console.log(msg.response);
+            setTweets(msg.response?.payload as Tweet[]);
+            setStage(2);
             break;
         }
         setMessageId(null);
@@ -293,8 +329,11 @@ export function CheckPulse() {
 
         return (
           <div className="space-y-4">
-            <div>
-              <span className="font-bold">Your top engagers!</span>
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-2xl">Your top engagers!</span>
+              <Button variant="outline" onClick={() => setImportDialogOpen(true)}>
+                Import From More Tweets
+              </Button>
             </div>
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
@@ -374,5 +413,32 @@ export function CheckPulse() {
     }
   };
 
-  return <div className="space-y-4">{renderStageView()}</div>;
+  return (
+  <div className="space-y-4">
+    {renderStageView()}
+    <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Import Tweets</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <Textarea 
+                      placeholder="Paste tweet links (one per line or comma-separated)"
+                      value={tweetLinks}
+                      onChange={(e) => setTweetLinks(e.target.value)}
+                      rows={6}
+                      disabled={isLoading}
+                    />
+                    <Button 
+                      className="w-full" 
+                      onClick={handleImportTweets}
+                      disabled={!tweetLinks.trim() || isLoading}
+                    >
+                      Import
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+  </div>)
+  ;
 }
