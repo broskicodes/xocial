@@ -16,10 +16,10 @@ const handler = NextAuth({
     TwitterProvider({
       clientId: process.env.TWITTER_API_KEY!,
       clientSecret: process.env.TWITTER_API_SECRET_KEY!,
-      version: "1.0",
+      version: "1.0a",
       authorization: {
         params: {
-          scope: "read write",
+          scope: "users.read tweet.read",
         },
       },
     }),
